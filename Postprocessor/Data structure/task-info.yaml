@@ -208,10 +208,10 @@ files:
     if __name__ == '__main__':
         Test().run_tests()
   learner_created: false
-feedback_link: https://hyperskill.org/projects/320/stages/1793/implement#comment
+feedback_link: https://hyperskill.org/learn/step/25696#comment
 check_profile: hyperskill_node_javascript
 status: Solved
 feedback:
   message: <html>Correct solution</html>
   time: "Fri, 22 Sep 2023 09:59:15 UTC"
-record: -1
+record: 1

@@ -1,4 +1,10 @@
 const fs = require('fs');
+const crypto = require('crypto');
+
+// Function to hash a password using SHA-256
+function hashPassword(password) {
+    return crypto.createHash('sha256').update(password).digest('hex');
+}
 
 // Read the database.csv file
 fs.readFile('database.csv', 'utf8', (err, data) => {
@@ -10,12 +16,15 @@ fs.readFile('database.csv', 'utf8', (err, data) => {
     // Split the file content into lines
     const lines = data.trim().split('\n');
 
-    // Take the last line and split it into columns
-    const lastLine = lines[lines.length - 1].split(',');
+    // Process each line to hash the password, skipping the header
+    const hashedData = lines.map((line, index) => {
+        if (index === 0) return line; // If it's the header, return as is
 
-    const nickname = lastLine[1].trim();
-    const consent = lastLine[3].trim() === "yes" ? "yes" : (lastLine[3].trim() === "no" ? "no" : "unknown");
+        const parts = line.split(',');
+        parts[2] = hashPassword(parts[2].trim());
+        return parts.join(', ');
+    });
 
-    console.log(`The user ${nickname} has "${consent}" consent status for sending emails`);
+    // Write the hashed data to hash_database.csv
+    fs.writeFileSync('hash_database.csv', hashedData.join('\n'));
 });
-

@@ -214,7 +214,7 @@ files:
     if __name__ == '__main__':
         Test().run_tests()
   learner_created: false
-feedback_link: https://hyperskill.org/projects/320/stages/1795/implement#comment
+feedback_link: https://hyperskill.org/learn/step/25698#comment
 check_profile: hyperskill_node_javascript
 status: Unchecked
 record: -1
