@@ -1,30 +1,29 @@
-const fs = require('fs');
-const crypto = require('crypto');
+const fs = require("node:fs");
+const crypto = require("node:crypto");
 
-// Function to hash a password using SHA-256
-function hashPassword(password) {
-    return crypto.createHash('sha256').update(password).digest('hex');
-}
+const header = "id, nickname, password, consent to mailing";
 
-// Read the database.csv file
-fs.readFile('database.csv', 'utf8', (err, data) => {
-    if (err) {
-        console.error("Error reading the file:", err);
-        return;
-    }
+fs.readFile("database.csv", "utf-8", (err, data) => {
+    if (err) throw err;
 
-    // Split the file content into lines
-    const lines = data.trim().split('\n');
+    const rows = data.split("\n");
 
-    // Process each line to hash the password, skipping the header
-    const hashedData = lines.map((line, index) => {
-        if (index === 0) return line; // If it's the header, return as is
+    // Filter out rows with incomplete data.
+    const validRows = rows.filter(row => !row.includes("-"));
 
-        const parts = line.split(',');
-        parts[2] = hashPassword(parts[2].trim());
-        return parts.join(', ');
+    // Reorder the indexes and hash the passwords.
+    const reorderedRows = validRows.map((row, index) => {
+        if (index === 0) {
+            return header;
+        }
+
+        const record = row.split(", ");
+        record[0] = String(index);
+        record[2] = crypto.createHash("sha256").update(record[2]).digest("hex");
+
+        return record.join(", ");
     });
 
-    // Write the hashed data to hash_database.csv
-    fs.writeFileSync('hash_database.csv', hashedData.join('\n'));
+    // Write the reordered and hashed data to filtered_database.csv.
+    fs.writeFileSync("filtered_database.csv", reorderedRows.join("\n"));
 });
